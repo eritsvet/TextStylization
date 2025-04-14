@@ -1,0 +1,201 @@
+@startuml
+class com.example.cursach.controllers.EventController {
+- EventService eventService
+- ProductService productService
++ String createEvent(Event)
++ String deleteEvent(Long)
+}
+
+
+interface com.example.cursach.repositories.UserRepository {
+~ User findByEmail(String)
+}
+
+class com.example.cursach.controllers.AdminController {
+- UserService userService
+- ProductService productService
+- EventService eventService
++ String admin(String,Principal,Model,Pageable)
++ String userBan(Long)
++ String userEdit(User,Model)
++ String userEdit(User,Map<String,String>)
++ String createProduct(MultipartFile,Product,Principal)
++ String deleteEventAdmin(Long)
+}
+
+
+class com.example.cursach.models.Event {
+- Long id
+- String username
+- String name
+- String date
+- String time
+- String price
+- String address
+- User user
+}
+
+class com.example.cursach.services.CustomUserDetailsService {
+- UserRepository userRepository
++ UserDetails loadUserByUsername(String)
+}
+
+
+class com.example.cursach.services.EventService {
+- UserRepository userRepository
+- EventRepository eventRepository
++ List<Event> listEvents(String)
++ void saveEvent(Event)
++ void deleteEvent(Long)
++ Event getEventById(Long)
+}
+
+
+interface com.example.cursach.repositories.EventRepository {
+~ List<Event> findByName(String)
+}
+
+class com.example.cursach.services.UserService {
+- UserRepository userRepository
+- PasswordEncoder passwordEncoder
++ boolean createUser(User)
++ List<User> list()
++ void banUser(Long)
++ void changeUserRoles(User,Map<String,String>)
++ User getUserByPrincipal(Principal)
+}
+
+
+class com.example.cursach.services.ProductService {
+- ProductRepository productRepository
+- UserRepository userRepository
++ Page<Product> listProducts(String,String,Pageable)
++ void saveProduct(Principal,Product,MultipartFile)
++ User getUserByPrincipal(Principal)
+- Image toImageEntity(MultipartFile)
++ void deleteProduct(Long)
++ Product getProductById(Long)
+}
+
+
+class com.example.cursach.models.Product {
+- Long id
+- String title
+- String price
+- String city
+- String address
+- String metro
+- String size
+- List<Image> images
+- Long previewImageId
+- User user
+- LocalDateTime dateOfCreated
+- void init()
++ void addImageToProduct(Image)
+}
+
+
+class com.example.cursach.CursachApplication {
++ {static} void main(String[])
+}
+
+class com.example.cursach.configurations.MvcConfig {
++ void addResourceHandlers(ResourceHandlerRegistry)
+}
+
+class com.example.cursach.controllers.ProductController {
+- EventService eventService
+- ProductService productService
+- ProductRepository productRepository
++ String products(String,String,Pageable,Principal,Model)
++ String productInfo(String,Principal,Long,Model)
++ String deleteProduct(Long)
+}
+
+
+class com.example.cursach.controllers.UserController {
+- UserService userService
+- EventService eventService
++ String login(Principal,Model)
++ String profile(String,Principal,Model)
++ String registration(Principal,Model)
++ String createUser(User,Model)
++ String userInfo(String,User,Model)
+}
+
+
+enum com.example.cursach.models.enums.Role {
++  ROLE_USER
++  ROLE_ADMIN
++ String getAuthority()
+}
+
+
+class com.example.cursach.models.User {
+- Long id
+- String email
+- String numberPhone
+- String name
+- boolean active
+- Image avatar
+- String password
+- Set<Role> roles
+- List<Product> products
+- LocalDateTime dateOfCreated
+- List<Event> events
+- void init()
++ boolean isAdmin()
++ Collection<? extends GrantedAuthority> getAuthorities()
++ String getUsername()
++ boolean isAccountNonExpired()
++ boolean isAccountNonLocked()
++ boolean isCredentialsNonExpired()
++ boolean isEnabled()
+}
+
+
+interface com.example.cursach.repositories.ProductRepository {
+~ Page<Product> findByMetroStartsWith(String,Pageable)
+~ Page<Product> findAll(Pageable)
+~ Page<Product> findByCityStartsWith(String,Pageable)
+~ Page<Product> findByMetroStartsWithAndCityStartsWith(String,String,Pageable)
+}
+
+class com.example.cursach.controllers.ImageController {
+- ImageRepository imageRepository
+- ResponseEntity<?> getImageById(Long)
+}
+
+
+class com.example.cursach.models.Image {
+- Long id
+- String name
+- String originalFileName
+- Long size
+- String contentType
+- boolean isPreviewImage
+- byte[] bytes
+- Product product
+}
+
+interface com.example.cursach.repositories.ImageRepository {
+}
+class com.example.cursach.configurations.SecurityConfig {
+- CustomUserDetailsService userDetailsService
+# void configure(HttpSecurity)
+# void configure(AuthenticationManagerBuilder)
++ PasswordEncoder passwordEncoder()
+}
+
+
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.cursach.repositories.UserRepository
+org.springframework.security.core.userdetails.UserDetailsService <|.. com.example.cursach.services.CustomUserDetailsService
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.cursach.repositories.EventRepository
+org.springframework.web.servlet.config.annotation.WebMvcConfigurer <|.. com.example.cursach.configurations.MvcConfig
+org.springframework.security.core.userdetails.UserDetails <|.. com.example.cursach.models.User
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.cursach.repositories.ProductRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.example.cursach.repositories.ImageRepository
+org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter <|-- com.example.cursach.configurations.SecurityConfig
+@enduml
