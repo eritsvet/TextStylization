@@ -1,14 +1,13 @@
-# Используем официальный образ с JDK 17
-FROM openjdk:17-jdk-slim
-
-# Указываем рабочую директорию
+# Этап 1: сборка приложения
+FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Копируем JAR-файл в контейнер
-COPY target/diploma-0.0.1-SNAPSHOT.jar app.jar
-
-# Открываем порт
+# Этап 2: запуск
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-
-# Команда запуска
 ENTRYPOINT ["java", "-jar", "app.jar"]
