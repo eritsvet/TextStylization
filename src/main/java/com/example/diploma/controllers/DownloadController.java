@@ -38,7 +38,7 @@ public class DownloadController {
         downloadStatsService.recordDownload(request);
         
         // Путь к файлу аддона
-        Path filePath = Paths.get("src/main/resources/static/downloads/text_stylization.zip").toAbsolutePath().normalize();
+        Path filePath = Paths.get("downloads/text_stylization.zip").toAbsolutePath().normalize();
         Resource resource = new UrlResource(filePath.toUri());
         
         if (resource.exists()) {
