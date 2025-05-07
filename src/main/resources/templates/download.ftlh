@@ -109,7 +109,7 @@
         <div class="download-section">
             <h1>Download Text Stylization</h1>
             <p>Get started with our powerful text styling tools today</p>
-            <a href="/download/addon" class="download-btn">Download Now</a>
+            <a href="https://github.com/eritsvet/text_stylization_addon" class="download-btn">Download Now</a>
             
             <div class="specs-section">
                 <h2>Specifications</h2>
